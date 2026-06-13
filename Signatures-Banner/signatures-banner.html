@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Agency Hero</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:#041a19;
+  overflow:hidden;
+}
+
+/* ── NAVBAR ── */
+.navbar{
+  position:absolute;top:0;left:0;width:100%;
+  padding:32px 80px;
+  display:flex;justify-content:space-between;align-items:center;
+  z-index:999;
+}
+.logo{font-size:42px;font-weight:700;color:#fff;}
+nav{display:flex;gap:40px;}
+nav a{color:#fff;text-decoration:none;font-size:15px;transition:opacity .2s;}
+nav a:hover{opacity:.6;}
+.nav-buttons{display:flex;gap:15px;}
+.demo-btn{background:#d6ff70;color:#000;padding:14px 28px;border-radius:100px;text-decoration:none;font-weight:600;transition:opacity .2s;}
+.demo-btn:hover{opacity:.85;}
+.login-btn{border:1px solid rgba(255,255,255,.3);color:#fff;padding:14px 28px;border-radius:100px;text-decoration:none;transition:border-color .2s;}
+.login-btn:hover{border-color:rgba(255,255,255,.7);}
+
+/* ── HERO LAYOUT ── */
+.hero{
+  height:100vh;
+  display:grid;
+  grid-template-columns:58% 42%;
+  overflow:hidden;
+}
+
+/* ── LEFT ── */
+.hero-left{
+  display:flex;flex-direction:column;justify-content:center;
+  padding-left:90px;z-index:20;
+}
+.hero-left h1{font-size:95px;line-height:1;color:#9cffc7;letter-spacing:-4px;font-weight:500;}
+.italic{font-family:Georgia,serif;font-style:italic;}
+.hero-left p{margin-top:35px;max-width:650px;font-size:24px;line-height:1.6;color:#fff;}
+.hero-btn{
+  margin-top:40px;display:inline-flex;width:max-content;
+  padding:18px 36px;border-radius:100px;background:#d6ff70;
+  color:#000;text-decoration:none;font-weight:600;transition:opacity .2s;
+}
+.hero-btn:hover{opacity:.85;}
+
+/* ── RIGHT ── */
+.hero-right{
+  position:relative;height:100vh;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:18px;padding:0 20px;
+  overflow:hidden;
+  /* mouse wheel captured here */
+  touch-action:none;
+}
+/* top/bottom fades */
+.hero-right::before,.hero-right::after{
+  content:"";position:absolute;left:0;right:0;height:160px;z-index:5;pointer-events:none;
+}
+.hero-right::before{top:0;background:linear-gradient(to bottom,#041a19 30%,transparent);}
+.hero-right::after{bottom:0;background:linear-gradient(to top,#041a19 30%,transparent);}
+
+/* ── COLUMNS ── */
+.scroll-column{position:relative;overflow:hidden;height:100vh;}
+
+/* The track holds exactly 2 sets of cards (original + 1 clone).
+   We animate between 0 and -50% so the jump is seamless. */
+.scroll-track{
+  display:flex;flex-direction:column;gap:18px;
+  will-change:transform;
+}
+
+.card{
+  overflow:hidden;border-radius:20px;cursor:pointer;
+  flex-shrink:0;
+}
+.card img{
+  width:100%;display:block;object-fit:cover;border-radius:20px;
+  transition:transform .4s ease,filter .3s ease;
+  pointer-events:none;
+  user-select:none;
+}
+.card:hover img{transform:scale(1.05);}
+
+/* varied heights */
+.card:nth-child(4n+1) img{height:380px;}
+.card:nth-child(4n+2) img{height:290px;}
+.card:nth-child(4n+3) img{height:440px;}
+.card:nth-child(4n+0) img{height:310px;}
+
+/* ── LIGHTBOX ── */
+.lightbox{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .35s ease, background .35s ease;
+}
+.lightbox.open{
+  opacity:1;
+  pointer-events:all;
+  background:rgba(0,0,0,.88);
+}
+.lightbox-inner{
+  position:relative;
+  max-width:90vw;max-height:90vh;
+  transform:scale(.88);
+  transition:transform .35s cubic-bezier(.22,1,.36,1);
+}
+.lightbox.open .lightbox-inner{transform:scale(1);}
+.lightbox-inner img{
+  display:block;
+  max-width:90vw;max-height:90vh;
+  border-radius:16px;
+  object-fit:contain;
+  box-shadow:0 40px 100px rgba(0,0,0,.6);
+}
+.lightbox-close{
+  position:absolute;top:-18px;right:-18px;
+  width:44px;height:44px;
+  background:#d6ff70;border:none;border-radius:50%;
+  font-size:20px;font-weight:700;line-height:1;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:#000;
+  transition:transform .2s,background .2s;
+  z-index:2;
+}
+.lightbox-close:hover{transform:scale(1.12);background:#c6ef55;}
+
+/* arrows */
+.lightbox-prev,.lightbox-next{
+  position:fixed;top:50%;transform:translateY(-50%);
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:#fff;font-size:22px;
+  width:52px;height:52px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .2s;
+  z-index:10001;
+}
+.lightbox-prev{left:24px;}
+.lightbox-next{right:24px;}
+.lightbox-prev:hover,.lightbox-next:hover{background:rgba(255,255,255,.22);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1200px){
+  body{overflow:auto;}
+  .hero{grid-template-columns:1fr;height:auto;}
+  .hero-left{padding:150px 30px 80px;}
+  .hero-left h1{font-size:70px;}
+  .hero-right{height:800px;}
+}
+@media(max-width:768px){
+  .navbar{padding:25px;}
+  nav{display:none;}
+  .hero-left{padding:120px 20px 60px;}
+  .hero-left h1{font-size:52px;letter-spacing:-2px;}
+  .hero-left p{font-size:18px;}
+  .hero-right{gap:10px;padding:0 10px;}
+}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">Signatures1</div>
+  <nav>
+    <a href="#">Services</a>
+    <a href="#">Our Work</a>
+    <a href="#">Why Us</a>
+    <a href="#">Resources</a>
+    <a href="#">Pricing</a>
+  </nav>
+  <div class="nav-buttons">
+    <a href="#" class="demo-btn">Book a demo</a>
+    <a href="#" class="login-btn">Sign In</a>
+  </div>
+</header>
+
+<section class="hero">
+
+  <div class="hero-left">
+    <h1>Your <span class="italic">creative team's</span><br>creative team™</h1>
+    <p>Scale your in-house creative team with top global talent powered by AI workflows, delivering branding, websites, and digital experiences faster and more affordably.</p>
+    <a href="#" class="hero-btn">Book a demo</a>
+  </div>
+
+  <div class="hero-right" id="heroRight">
+
+    <!-- COLUMN 1 -->
+    <div class="scroll-column">
+      <div class="scroll-track" id="track0">
+        <div class="card"><img src="signatures-banner/column1/1.jpg" alt=""></div>
+        <div class="card"><img src="signatures-banner/column1/2.jpg" alt=""></div>
+        <div class="card"><img src="signatures-banner/column1/3.jpg" alt=""></div>
+        <div class="card"><img src="signatures-banner/column1/4.jpg" alt=""></div>
+      </div>
+    </div>
+
+    <!-- COLUMN 2 -->
+    <div class="scroll-column">
+      <div class="scroll-track" id="track1">
+        <div class="card"><img src="signatures-banner/column2/1.jpg" alt=""></div>
+        <div class="card"><img src="signatures-banner/column2/2.jpg" alt=""></div>
+        <div class="card"><img src="signatures-banner/column2/3.jpg" alt=""></div>
+        <div class="card"><img src="signatures-banner/column2/4.jpg" alt=""></div>
+      </div>
+    </div>
+
+    <!-- COLUMN 3 -->
+    <div class="scroll-column">
+      <div class="scroll-track" id="track2">
+        <div class="card"><img src="signatures-banner/column3/1.jpg" alt=""></div>
+        <div class="card"><img src="signatures-banner/column3/2.jpg" alt=""></div>
+        <div class="card"><img src="signatures-banner/column3/3.jpg" alt=""></div>
+        <div class="card"><img src="signatures-banner/column3/4.jpg" alt=""></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <button class="lightbox-prev" id="lbPrev" aria-label="Previous image">&#8592;</button>
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lbClose" aria-label="Close">&#x2715;</button>
+    <img id="lbImg" src="" alt="Full size preview">
+  </div>
+  <button class="lightbox-next" id="lbNext" aria-label="Next image">&#8594;</button>
+</div>
+
+<script>
+/* =====================================================================
+   INFINITE SCROLL — clean, direction-agnostic engine
+   Each track gets exactly 3 identical copies stacked vertically.
+   oneSetH  = scrollHeight / 3  (height of one copy).
+   rawPos   grows (or shrinks) unbounded each frame.
+   displayed offset = ((rawPos % oneSetH) + oneSetH) % oneSetH
+   We always show the MIDDLE copy so there's content above AND below.
+   This works for both positive and negative baseSpeed with zero glitch.
+===================================================================== */
+
+const BASE_SPEEDS = [0.40, -0.55, 0.28];
+const WHEEL_MUL   = [1.0,   1.3,  0.7];
+const INERTIA     = 0.92;
+
+const trackEls = [
+  document.getElementById('track0'),
+  document.getElementById('track1'),
+  document.getElementById('track2'),
+];
+
+const columns = trackEls.map((track, i) => {
+  // Always make exactly 3 copies (original already counts as 1)
+  const original = track.innerHTML;
+  track.innerHTML = original + original + original;
+
+  // Start mid-way through the first copy so there's content above for reverse cols
+  return {
+    track,
+    rawPos: 0,
+    vel: 0,
+    baseSpeed: BASE_SPEEDS[i],
+    oneSetH: 0,   // lazily measured after images load
+  };
+});
+
+/* ── Measure heights after images load ───────────────────── */
+function measureHeights() {
+  columns.forEach(c => {
+    if (c.track.scrollHeight > 0) {
+      c.oneSetH = c.track.scrollHeight / 3;
+    }
+  });
+}
+window.addEventListener('load', measureHeights);
+// also measure on first animate frame
+let measured = false;
+
+/* ── Mouse wheel ──────────────────────────────────────────── */
+document.getElementById('heroRight').addEventListener('wheel', e => {
+  e.preventDefault();
+  columns.forEach((c, i) => {
+    // wheel down = positive delta = scroll content upward = negative rawPos direction
+    c.vel -= e.deltaY * 0.10 * WHEEL_MUL[i];
+  });
+}, { passive: false });
+
+/* ── Animation loop ───────────────────────────────────────── */
+function animate() {
+  if (!measured) { measureHeights(); measured = true; }
+
+  columns.forEach(c => {
+    if (!c.oneSetH) { requestAnimationFrame(animate); return; }
+
+    c.rawPos += c.baseSpeed + c.vel;
+    c.vel    *= INERTIA;
+    if (Math.abs(c.vel) < 0.01) c.vel = 0;
+
+    const h = c.oneSetH;
+
+    // Wrap rawPos into [0, h)  — always positive, direction-neutral
+    const wrapped = ((c.rawPos % h) + h) % h;
+
+    // Offset into the MIDDLE copy so visual continuity holds both ways
+    const offset = wrapped + h;
+
+    c.track.style.transform = `translateY(${-offset}px)`;
+  });
+
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* =====================================================================
+   LIGHTBOX
+===================================================================== */
+const lightbox = document.getElementById('lightbox');
+const lbImg    = document.getElementById('lbImg');
+document.getElementById('lbClose').addEventListener('click', closeLightbox);
+document.getElementById('lbPrev').addEventListener('click', e => { e.stopPropagation(); navigate(-1); });
+document.getElementById('lbNext').addEventListener('click', e => { e.stopPropagation(); navigate(1); });
+lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('open')) return;
+  if (e.key === 'Escape')    closeLightbox();
+  if (e.key === 'ArrowLeft') navigate(-1);
+  if (e.key === 'ArrowRight')navigate(1);
+});
+
+let allImages = [];
+let lbIndex   = 0;
+
+function buildImageList() {
+  allImages = [];
+  columns.forEach(c => {
+    // Only first set (indices 0 … imgsPerSet-1)
+    const all     = c.track.querySelectorAll('img');
+    const perSet  = all.length / 3;
+    for (let i = 0; i < perSet; i++) allImages.push(all[i].src);
+  });
+}
+
+function openLightbox(src) {
+  buildImageList();
+  lbIndex = allImages.findIndex(s => s === src);
+  if (lbIndex < 0) lbIndex = 0;
+  lbImg.src = allImages[lbIndex];
+  lightbox.classList.add('open');
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  setTimeout(() => { lbImg.src = ''; }, 350);
+}
+
+function navigate(dir) {
+  lbIndex = ((lbIndex + dir) % allImages.length + allImages.length) % allImages.length;
+  lbImg.style.opacity = '0';
+  setTimeout(() => {
+    lbImg.src = allImages[lbIndex];
+    lbImg.style.opacity = '1';
+  }, 140);
+}
+
+lbImg.style.transition = 'opacity .14s ease';
+
+// Attach click to every card (including clones via delegation)
+document.getElementById('heroRight').addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card) return;
+  openLightbox(card.querySelector('img').src);
+});
+
+// Touch swipe in lightbox
+let touchStartX = 0;
+lightbox.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+lightbox.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 50) navigate(dx < 0 ? 1 : -1);
+});
+
+</script>
+</body>
+</html>
