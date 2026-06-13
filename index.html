@@ -6,32 +6,174 @@
 <title>Creative Agency Hero</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* ── RESET ── */
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
   font-family:'Inter',sans-serif;
-  background:#041a19;
+  background:#050505;
   overflow:hidden;
 }
 
-/* ── NAVBAR ── */
-.navbar{
-  position:absolute;top:0;left:0;width:100%;
-  padding:32px 80px;
-  display:flex;justify-content:space-between;align-items:center;
-  z-index:999;
+/* ═══════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════ */
+header{
+  position:fixed;top:0;left:0;width:100%;
+  padding:22px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  z-index:1000;
+  /* subtle dark fade so it sits over the hero */
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,.95) 0%,
+    transparent 100%);
 }
-.logo{font-size:42px;font-weight:700;color:#fff;}
-nav{display:flex;gap:40px;}
-nav a{color:#fff;text-decoration:none;font-size:15px;transition:opacity .2s;}
-nav a:hover{opacity:.6;}
-.nav-buttons{display:flex;gap:15px;}
-.demo-btn{background:#d6ff70;color:#000;padding:14px 28px;border-radius:100px;text-decoration:none;font-weight:600;transition:opacity .2s;}
-.demo-btn:hover{opacity:.85;}
-.login-btn{border:1px solid rgba(255,255,255,.3);color:#fff;padding:14px 28px;border-radius:100px;text-decoration:none;transition:border-color .2s;}
-.login-btn:hover{border-color:rgba(255,255,255,.7);}
 
-/* ── HERO LAYOUT ── */
+/* logo video */
+.header-logo{display:flex;align-items:center;text-decoration:none;}
+.header-logo video{height:42px;width:auto;display:block;}
+
+/* text/svg logo (fallback / second logo) */
+.header-logo2{display:flex;align-items:center;text-decoration:none;}
+.header-logo2 img{height:36px;width:auto;display:block;}
+
+/* right-side controls */
+.header-items{
+  display:flex;align-items:center;gap:18px;
+}
+
+/* ── THEME TOGGLE ── */
+.mode-button{
+  width:44px;height:44px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.25);
+  display:flex;align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;
+  padding:10px;
+  flex-wrap:wrap;
+}
+.mode-button div{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,.5);
+  transition:background .3s;
+}
+.mode-button:hover div{background:#ff2b2b;}
+
+/* ── HAMBURGER ── */
+.hamburger{
+  display:flex;flex-direction:column;justify-content:center;
+  gap:5px;cursor:pointer;padding:8px;
+}
+.hamburger .line{
+  width:26px;height:2px;
+  background:#fff;border-radius:2px;
+  transition:transform .35s ease,opacity .25s ease,width .25s ease;
+  transform-origin:center;
+}
+/* open state */
+.hamburger.is-open .line1{transform:translateY(7px) rotate(45deg);}
+.hamburger.is-open .line2{opacity:0;width:0;}
+.hamburger.is-open .line3{transform:translateY(-7px) rotate(-45deg);}
+
+/* ═══════════════════════════════════════════════
+   FULL-SCREEN MENU OVERLAY
+═══════════════════════════════════════════════ */
+.header-menu{
+  position:fixed;inset:0;
+  background:#050505;
+  z-index:999;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:100px 48px 60px;
+  overflow-y:auto;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-12px);
+  transition:opacity .4s ease,transform .4s ease;
+}
+.header-menu.menu-open{
+  opacity:1;pointer-events:all;transform:translateY(0);
+}
+
+/* ── DESKTOP LAYOUT (.menu-f) ── */
+.menu-f{display:flex;gap:0;}
+
+/* hide responsive version by default */
+.menu-f-responsive{display:none;}
+
+.header-menu-two{
+  display:flex;gap:0;flex:1;
+}
+.header-menu-two-inner{
+  flex:1;
+  display:flex;flex-direction:column;
+  padding:0 32px;
+  border-left:1px solid rgba(255,255,255,.08);
+}
+.header-menu-two-inner:first-child{border-left:none;}
+
+/* top plain link (ABOUT / ARTICLES / CAREERS / CONTACT) */
+.header-menu-two-inner > a{
+  color:rgba(255,255,255,.35);
+  text-decoration:none;
+  font-size:11px;letter-spacing:.15em;font-weight:600;
+  margin-bottom:24px;
+  transition:color .2s;
+}
+.header-menu-two-inner > a:hover{color:#ff2b2b;}
+
+/* ── DROPDOWN TOGGLE ── */
+.menu-dropdown{position:relative;}
+
+.dropdown-toggle{
+  background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:10px;
+  padding:0;
+  color:#fff;
+  font-family:'Inter',sans-serif;
+  font-size:13px;letter-spacing:.12em;font-weight:700;
+  text-transform:uppercase;
+  margin-bottom:18px;
+}
+.dropdown-toggle:hover span:first-child{color:#ff2b2b;}
+
+.menu-arrow{
+  width:8px;height:8px;
+  border-right:2px solid rgba(255,255,255,.4);
+  border-bottom:2px solid rgba(255,255,255,.4);
+  transform:rotate(45deg);
+  transition:transform .25s;
+  flex-shrink:0;
+  margin-top:-3px;
+}
+.menu-dropdown.active .menu-arrow{transform:rotate(-135deg);margin-top:3px;}
+
+/* dropdown links */
+.dropdown-content{
+  display:flex;flex-direction:column;gap:2px;
+  overflow:hidden;
+  /* desktop: always visible */
+}
+.dropdown-content a{
+  color:rgba(255,255,255,.55);
+  text-decoration:none;
+  font-size:14px;line-height:1.5;
+  padding:5px 0;
+  transition:color .2s,padding-left .2s;
+}
+.dropdown-content a:hover{color:#fff;padding-left:6px;}
+
+/* ── SOCIAL LINKS ── */
+.header-social-links{
+  display:flex;gap:18px;margin-top:48px;padding-top:32px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.header-social-links a{opacity:.5;transition:opacity .2s;}
+.header-social-links a:hover{opacity:1;}
+.header-social-links img{height:20px;width:auto;filter:invert(1);}
+
+/* ═══════════════════════════════════════════════
+   HERO LAYOUT
+═══════════════════════════════════════════════ */
 .hero{
   height:100vh;
   display:grid;
@@ -44,15 +186,30 @@ nav a:hover{opacity:.6;}
   display:flex;flex-direction:column;justify-content:center;
   padding-left:90px;z-index:20;
 }
-.hero-left h1{font-size:95px;line-height:1;color:#9cffc7;letter-spacing:-4px;font-weight:500;}
-.italic{font-family:Georgia,serif;font-style:italic;}
-.hero-left p{margin-top:35px;max-width:650px;font-size:24px;line-height:1.6;color:#fff;}
+.hero-left h1{
+  font-size:70px;line-height:1;
+  color:#ff2b2b;
+  letter-spacing:-4px;font-weight:500;
+}
+.italic{
+  color:#ffffff;
+  font-family:Georgia,serif;
+  font-style:italic;
+}
+.hero-left p{
+  margin-top:35px;max-width:650px;
+  font-size:18px;line-height:1.6;color:#fff;
+}
 .hero-btn{
   margin-top:40px;display:inline-flex;width:max-content;
-  padding:18px 36px;border-radius:100px;background:#d6ff70;
-  color:#000;text-decoration:none;font-weight:600;transition:opacity .2s;
+  padding:18px 36px;border-radius:100px;background:#ff2b2b;
+  background:#ff1e1e;
+  color:#fff;
+  box-shadow:0 0 30px rgba(255,30,30,.35);
+  text-decoration:none;
+  font-weight:600;transition:opacity .2s;
 }
-.hero-btn:hover{opacity:.85;}
+.hero-btn:hover{ background:#ff3b3b; opacity:1;}
 
 /* ── RIGHT ── */
 .hero-right{
@@ -60,10 +217,8 @@ nav a:hover{opacity:.6;}
   display:grid;grid-template-columns:repeat(3,1fr);
   gap:18px;padding:0 20px;
   overflow:hidden;
-  /* mouse wheel captured here */
   touch-action:none;
 }
-/* top/bottom fades */
 .hero-right::before,.hero-right::after{
   content:"";position:absolute;left:0;right:0;height:160px;z-index:5;pointer-events:none;
 }
@@ -72,23 +227,12 @@ nav a:hover{opacity:.6;}
 
 /* ── COLUMNS ── */
 .scroll-column{position:relative;overflow:hidden;height:100vh;}
+.scroll-track{display:flex;flex-direction:column;gap:18px;will-change:transform;}
 
-/* The track holds exactly 2 sets of cards (original + 1 clone).
-   We animate between 0 and -50% so the jump is seamless. */
-.scroll-track{
-  display:flex;flex-direction:column;gap:18px;
-  will-change:transform;
-}
-
-.card{
-  overflow:hidden;border-radius:20px;cursor:pointer;
-  flex-shrink:0;
-}
+.card{overflow:hidden;border-radius:20px;cursor:pointer;flex-shrink:0;}
 .card img{
   width:100%;display:block;object-fit:cover;border-radius:20px;
-  transition:transform .4s ease,filter .3s ease;
-  pointer-events:none;
-  user-select:none;
+  transition:transform .4s ease;pointer-events:none;user-select:none;
 }
 .card:hover img{transform:scale(1.05);}
 
@@ -98,62 +242,88 @@ nav a:hover{opacity:.6;}
 .card:nth-child(4n+3) img{height:440px;}
 .card:nth-child(4n+0) img{height:310px;}
 
-/* ── LIGHTBOX ── */
+/* ═══════════════════════════════════════════════
+   LIGHTBOX
+═══════════════════════════════════════════════ */
 .lightbox{
   position:fixed;inset:0;
   background:rgba(0,0,0,0);
   display:flex;align-items:center;justify-content:center;
-  z-index:9999;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .35s ease, background .35s ease;
+  z-index:9999;opacity:0;pointer-events:none;
+  transition:opacity .35s ease,background .35s ease;
 }
-.lightbox.open{
-  opacity:1;
-  pointer-events:all;
-  background:rgba(0,0,0,.88);
-}
+.lightbox.open{opacity:1;pointer-events:all;background:rgba(0,0,0,.88);}
 .lightbox-inner{
-  position:relative;
-  max-width:90vw;max-height:90vh;
+  position:relative;max-width:90vw;max-height:90vh;
   transform:scale(.88);
   transition:transform .35s cubic-bezier(.22,1,.36,1);
 }
 .lightbox.open .lightbox-inner{transform:scale(1);}
 .lightbox-inner img{
-  display:block;
-  max-width:90vw;max-height:90vh;
-  border-radius:16px;
-  object-fit:contain;
+  display:block;max-width:90vw;max-height:90vh;
+  border-radius:16px;object-fit:contain;
   box-shadow:0 40px 100px rgba(0,0,0,.6);
 }
 .lightbox-close{
   position:absolute;top:-18px;right:-18px;
   width:44px;height:44px;
-  background:#d6ff70;border:none;border-radius:50%;
-  font-size:20px;font-weight:700;line-height:1;
+  background:#ff2b2b;
+  color:#fff;;border:none;border-radius:50%;
+  font-size:20px;font-weight:700;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
-  color:#000;
-  transition:transform .2s,background .2s;
-  z-index:2;
+  transition:transform .2s,background .2s;z-index:2;
 }
-.lightbox-close:hover{transform:scale(1.12);background:#c6ef55;}
-
-/* arrows */
+.lightbox-close:hover{transform:scale(1.12);background:#ff4d4d;}
 .lightbox-prev,.lightbox-next{
   position:fixed;top:50%;transform:translateY(-50%);
   background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
   color:#fff;font-size:22px;
   width:52px;height:52px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:background .2s;
-  z-index:10001;
+  cursor:pointer;transition:background .2s;z-index:10001;
 }
 .lightbox-prev{left:24px;}
 .lightbox-next{right:24px;}
 .lightbox-prev:hover,.lightbox-next:hover{background:rgba(255,255,255,.22);}
 
-/* ── RESPONSIVE ── */
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media(max-width:1280px){
+  /* switch to responsive menu layout */
+  .menu-f:not(.menu-f-responsive){display:none;}
+  .menu-f-responsive{display:flex;flex-direction:column;gap:0;}
+
+  .header-menu-two{flex-direction:column;}
+
+  /* accordion dropdowns for mobile */
+  .menu-f-responsive .dropdown-content{
+    height:0;overflow:hidden;
+    transition:height .35s ease;
+  }
+  .menu-f-responsive .menu-dropdown{
+    border-bottom:1px solid rgba(255,255,255,.08);
+    padding:4px 0;
+  }
+  .menu-f-responsive .dropdown-toggle{
+    font-size:15px;padding:12px 0;margin-bottom:0;width:100%;
+    justify-content:space-between;
+  }
+  .menu-f-responsive .dropdown-content a{padding:8px 0 8px 16px;}
+
+  .header-menu-one{
+    display:flex;flex-wrap:wrap;gap:10px 28px;
+    margin-bottom:32px;padding-bottom:24px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .header-menu-one a{
+    color:rgba(255,255,255,.5);text-decoration:none;
+    font-size:11px;letter-spacing:.15em;font-weight:600;
+    transition:color .2s;
+  }
+  .header-menu-one a:hover{color:#ff2b2b;}
+}
+
 @media(max-width:1200px){
   body{overflow:auto;}
   .hero{grid-template-columns:1fr;height:auto;}
@@ -161,33 +331,194 @@ nav a:hover{opacity:.6;}
   .hero-left h1{font-size:70px;}
   .hero-right{height:800px;}
 }
+
 @media(max-width:768px){
-  .navbar{padding:25px;}
-  nav{display:none;}
+  header{padding:18px 20px;}
   .hero-left{padding:120px 20px 60px;}
   .hero-left h1{font-size:52px;letter-spacing:-2px;}
   .hero-left p{font-size:18px;}
   .hero-right{gap:10px;padding:0 10px;}
+  .header-menu{padding:90px 24px 48px;}
 }
 </style>
 </head>
 <body>
 
-<header class="navbar">
-  <div class="logo">Signatures1</div>
-  <nav>
-    <a href="#">Services</a>
-    <a href="#">Our Work</a>
-    <a href="#">Why Us</a>
-    <a href="#">Resources</a>
-    <a href="#">Pricing</a>
-  </nav>
-  <div class="nav-buttons">
-    <a href="#" class="demo-btn">Book a demo</a>
-    <a href="#" class="login-btn">Sign In</a>
+<!-- ═══════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════ -->
+<header>
+  <a href="/" class="header-logo">
+    <video autoplay loop muted playsinline>
+      <source src="logo.webm" type="video/webm">
+    </video>
+  </a>
+
+  <a href="/" class="header-logo2">
+    <img src="signature-01.svg" alt="Signatures1">
+  </a>
+
+  <div class="header-items">
+    <div class="mode-button" id="themeToggle" title="Toggle theme">
+      <div></div><div></div><div></div><div></div><div></div>
+    </div>
+    <div class="hamburger" id="hamburger">
+      <div class="line line1"></div>
+      <div class="line line2"></div>
+      <div class="line line3"></div>
+    </div>
   </div>
 </header>
 
+<!-- ═══════════════════════════════════════════
+     FULL-SCREEN MENU
+════════════════════════════════════════════ -->
+<div class="header-menu" id="header-menu">
+
+  <!-- DESKTOP LAYOUT -->
+  <div class="menu-f">
+    <div class="header-menu-two">
+
+      <div class="header-menu-two-inner">
+        <a href="/about-us">ABOUT</a>
+        <div class="menu-dropdown">
+          <button class="dropdown-toggle"><span>BRANDING</span><span class="menu-arrow"></span></button>
+          <div class="dropdown-content">
+            <a href="/branding-and-design">Branding & Design</a>
+            <a href="/branding-and-design/branding-solutions#branding-solutions">Branding Solutions</a>
+            <a href="/branding-and-design/branding-solutions#brand-research">Brand Research</a>
+            <a href="/branding-and-design/branding-solutions#brand-strategy">Brand Strategy</a>
+            <a href="/branding-and-design/branding-solutions#brand-management">Brand Management</a>
+            <a href="/branding-and-design/branding-solutions#rebranding">Rebranding</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-menu-two-inner">
+        <a href="/articles/">ARTICLES</a>
+        <div class="menu-dropdown">
+          <button class="dropdown-toggle"><span>VISUAL IDENTITY DESIGN</span><span class="menu-arrow"></span></button>
+          <div class="dropdown-content">
+            <a href="/visual-identity-design">Visual Identity Design</a>
+            <a href="/visual-identity-design/#print-design">Print Design</a>
+            <a href="/visual-identity-design/#packaging">Packaging</a>
+            <a href="/visual-identity-design/#presentation">Presentation</a>
+            <a href="/visual-identity-design/#graphic-design">Graphic Design</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-menu-two-inner">
+        <a href="/careers/">CAREERS</a>
+        <div class="menu-dropdown">
+          <button class="dropdown-toggle"><span>WEB SOLUTIONS</span><span class="menu-arrow"></span></button>
+          <div class="dropdown-content">
+            <a href="/web-solutions">Web Solutions</a>
+            <a href="/web-solutions/design-and-development#website-design-and-development">Website Design & Development</a>
+            <a href="/web-solutions/design-and-development#website-design">Website Design</a>
+            <a href="/web-solutions/design-and-development#e-commerce-solution">E-Commerce Solution</a>
+            <a href="/web-solutions/design-and-development#landing-page-design">Landing Page Design</a>
+            <a href="/web-solutions/design-and-development#content-management-system">Content Management</a>
+            <a href="/web-solutions/design-and-development#website-maintenance">Website Maintenance & Support</a>
+            <a href="/web-solutions/cloud-solutions#cloud">Cloud Solutions</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-menu-two-inner">
+        <a href="/contact">CONTACT</a>
+        <div class="menu-dropdown">
+          <button class="dropdown-toggle"><span>DIGITAL MARKETING</span><span class="menu-arrow"></span></button>
+          <div class="dropdown-content">
+            <a href="/web-solutions/digital-marketing">Digital Marketing</a>
+            <a href="/web-solutions/digital-marketing#content-marketing">Content Marketing</a>
+            <a href="/web-solutions/digital-marketing#search-engine-optimization">Search Engine Optimization</a>
+            <a href="/web-solutions/digital-marketing#social-media-marketing">Social Media Marketing</a>
+            <a href="/web-solutions/digital-marketing#search-engine-marketing">Search Engine Marketing</a>
+            <a href="/web-solutions/digital-marketing#influencer-marketing">Influencer Marketing</a>
+            <a href="/web-solutions/digital-marketing#email-marketing">Email Marketing</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RESPONSIVE LAYOUT (≤1280px) -->
+  <div class="menu-f menu-f-responsive">
+    <div class="header-menu-one">
+      <a href="/about-us">ABOUT</a>
+      <a href="/articles">ARTICLES</a>
+      <a href="/careers">CAREERS</a>
+      <a href="/contact">CONTACT</a>
+    </div>
+
+    <div class="header-menu-two">
+
+      <div class="menu-dropdown">
+        <button class="dropdown-toggle"><span>BRANDING</span><span class="menu-arrow"></span></button>
+        <div class="dropdown-content">
+          <a href="/branding-and-design">Branding & Design</a>
+          <a href="/branding-and-design/branding-solutions#branding-solutions">Branding Solutions</a>
+          <a href="/branding-and-design/branding-solutions#brand-research">Brand Research</a>
+          <a href="/branding-and-design/branding-solutions#brand-strategy">Brand Strategy</a>
+          <a href="/branding-and-design/branding-solutions#brand-management">Brand Management</a>
+          <a href="/branding-and-design/branding-solutions#rebranding">Rebranding</a>
+        </div>
+      </div>
+
+      <div class="menu-dropdown">
+        <button class="dropdown-toggle"><span>VISUAL IDENTITY DESIGN</span><span class="menu-arrow"></span></button>
+        <div class="dropdown-content">
+          <a href="/visual-identity-design">Visual Identity Design</a>
+          <a href="/visual-identity-design#print-design">Print Design</a>
+          <a href="/visual-identity-design#packaging">Packaging</a>
+          <a href="/visual-identity-design#presentation">Presentation</a>
+          <a href="/visual-identity-design#graphic-design">Graphic Design</a>
+        </div>
+      </div>
+
+      <div class="menu-dropdown">
+        <button class="dropdown-toggle"><span>WEB SOLUTIONS</span><span class="menu-arrow"></span></button>
+        <div class="dropdown-content">
+          <a href="/web-solutions">Web Solutions</a>
+          <a href="/web-solutions/design-and-development#website-design-and-development">Website Design & Development</a>
+          <a href="/web-solutions/design-and-development#website-design">Website Design</a>
+          <a href="/web-solutions/design-and-development#e-commerce-solution">E-Commerce Solution</a>
+          <a href="/web-solutions/design-and-development#landing-page-design">Landing Page Design</a>
+          <a href="/web-solutions/design-and-development#content-management-system">Content Management</a>
+          <a href="/web-solutions/design-and-development#website-maintenance">Website Maintenance & Support</a>
+          <a href="/web-solutions/cloud-solutions#cloud">Cloud Solutions</a>
+        </div>
+      </div>
+
+      <div class="menu-dropdown">
+        <button class="dropdown-toggle"><span>DIGITAL MARKETING</span><span class="menu-arrow"></span></button>
+        <div class="dropdown-content">
+          <a href="/web-solutions/digital-marketing">Digital Marketing</a>
+          <a href="/web-solutions/digital-marketing#content-marketing">Content Marketing</a>
+          <a href="/web-solutions/digital-marketing#search-engine-optimization">Search Engine Optimization</a>
+          <a href="/web-solutions/digital-marketing#social-media-marketing">Social Media Marketing</a>
+          <a href="/web-solutions/digital-marketing#search-engine-marketing">Search Engine Marketing</a>
+          <a href="/web-solutions/digital-marketing#influencer-marketing">Influencer Marketing</a>
+          <a href="/web-solutions/digital-marketing#email-marketing">Email Marketing</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="header-social-links">
+    <a href="https://www.facebook.com/signatures1designsandcommunications/" target="_blank"><img src="/images/home/fb.svg" alt="Facebook"></a>
+    <a href="https://www.instagram.com/signatures1.com_/" target="_blank"><img src="/images/home/insta.svg" alt="Instagram"></a>
+    <a href="https://wa.me/9943026603" target="_blank"><img src="/images/home/whatsapp.svg" alt="WhatsApp"></a>
+    <a href="https://in.linkedin.com/company/signatures1designsandcommunications" target="_blank"><img src="/images/home/linked.svg" alt="LinkedIn"></a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
 <section class="hero">
 
   <div class="hero-left">
@@ -198,7 +529,6 @@ nav a:hover{opacity:.6;}
 
   <div class="hero-right" id="heroRight">
 
-    <!-- COLUMN 1 -->
     <div class="scroll-column">
       <div class="scroll-track" id="track0">
         <div class="card"><img src="signatures-banner/column1/1.jpg" alt=""></div>
@@ -208,7 +538,6 @@ nav a:hover{opacity:.6;}
       </div>
     </div>
 
-    <!-- COLUMN 2 -->
     <div class="scroll-column">
       <div class="scroll-track" id="track1">
         <div class="card"><img src="signatures-banner/column2/1.jpg" alt=""></div>
@@ -218,7 +547,6 @@ nav a:hover{opacity:.6;}
       </div>
     </div>
 
-    <!-- COLUMN 3 -->
     <div class="scroll-column">
       <div class="scroll-track" id="track2">
         <div class="card"><img src="signatures-banner/column3/1.jpg" alt=""></div>
@@ -231,7 +559,9 @@ nav a:hover{opacity:.6;}
   </div>
 </section>
 
-<!-- LIGHTBOX -->
+<!-- ═══════════════════════════════════════════
+     LIGHTBOX
+════════════════════════════════════════════ -->
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
   <button class="lightbox-prev" id="lbPrev" aria-label="Previous image">&#8592;</button>
   <div class="lightbox-inner">
@@ -242,16 +572,64 @@ nav a:hover{opacity:.6;}
 </div>
 
 <script>
-/* =====================================================================
-   INFINITE SCROLL — clean, direction-agnostic engine
-   Each track gets exactly 3 identical copies stacked vertically.
-   oneSetH  = scrollHeight / 3  (height of one copy).
-   rawPos   grows (or shrinks) unbounded each frame.
-   displayed offset = ((rawPos % oneSetH) + oneSetH) % oneSetH
-   We always show the MIDDLE copy so there's content above AND below.
-   This works for both positive and negative baseSpeed with zero glitch.
-===================================================================== */
+/* ═══════════════════════════════════════════
+   HAMBURGER — open / close menu
+════════════════════════════════════════════ */
+const hamburger  = document.getElementById('hamburger');
+const headerMenu = document.getElementById('header-menu');
 
+function menuOpen(){
+  hamburger.classList.add('is-open');
+  headerMenu.classList.add('menu-open');
+  document.body.style.overflow = 'hidden';
+}
+function menuClose(){
+  hamburger.classList.remove('is-open');
+  headerMenu.classList.remove('menu-open');
+  document.body.style.overflow = '';
+}
+
+hamburger.addEventListener('click', () => {
+  headerMenu.classList.contains('menu-open') ? menuClose() : menuOpen();
+});
+
+/* close when a nav link is clicked */
+headerMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', menuClose));
+
+/* close on Escape */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && headerMenu.classList.contains('menu-open')) menuClose();
+});
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE ACCORDION DROPDOWNS
+════════════════════════════════════════════ */
+document.querySelectorAll('.menu-f-responsive .dropdown-toggle').forEach(btn => {
+  btn.addEventListener('click', function(){
+    const wrap   = this.closest('.menu-dropdown');
+    const content= wrap.querySelector('.dropdown-content');
+    const isOpen = wrap.classList.contains('active');
+
+    /* collapse all */
+    document.querySelectorAll('.menu-f-responsive .menu-dropdown').forEach(d => {
+      d.classList.remove('active');
+      d.querySelector('.dropdown-content').style.height = '0px';
+    });
+
+    /* open this one if it wasn't already open */
+    if(!isOpen){
+      wrap.classList.add('active');
+      content.style.height = content.scrollHeight + 'px';
+    }
+  });
+});
+
+/* ═══════════════════════════════════════════
+   INFINITE SCROLL ENGINE
+   3 copies per track. rawPos grows unbounded.
+   wrap = ((rawPos % h) + h) % h  → [0,h)
+   offset = wrap + h  → always renders middle copy
+════════════════════════════════════════════ */
 const BASE_SPEEDS = [0.40, -0.55, 0.28];
 const WHEEL_MUL   = [1.0,   1.3,  0.7];
 const INERTIA     = 0.92;
@@ -263,135 +641,100 @@ const trackEls = [
 ];
 
 const columns = trackEls.map((track, i) => {
-  // Always make exactly 3 copies (original already counts as 1)
   const original = track.innerHTML;
   track.innerHTML = original + original + original;
-
-  // Start mid-way through the first copy so there's content above for reverse cols
-  return {
-    track,
-    rawPos: 0,
-    vel: 0,
-    baseSpeed: BASE_SPEEDS[i],
-    oneSetH: 0,   // lazily measured after images load
-  };
+  return { track, rawPos:0, vel:0, baseSpeed:BASE_SPEEDS[i], oneSetH:0 };
 });
 
-/* ── Measure heights after images load ───────────────────── */
-function measureHeights() {
+function measureHeights(){
   columns.forEach(c => {
-    if (c.track.scrollHeight > 0) {
-      c.oneSetH = c.track.scrollHeight / 3;
-    }
+    const h = c.track.scrollHeight / 3;
+    if(h > 0) c.oneSetH = h;
   });
 }
 window.addEventListener('load', measureHeights);
-// also measure on first animate frame
 let measured = false;
 
-/* ── Mouse wheel ──────────────────────────────────────────── */
 document.getElementById('heroRight').addEventListener('wheel', e => {
   e.preventDefault();
-  columns.forEach((c, i) => {
-    // wheel down = positive delta = scroll content upward = negative rawPos direction
-    c.vel -= e.deltaY * 0.10 * WHEEL_MUL[i];
-  });
-}, { passive: false });
+  columns.forEach((c, i) => { c.vel -= e.deltaY * 0.10 * WHEEL_MUL[i]; });
+}, { passive:false });
 
-/* ── Animation loop ───────────────────────────────────────── */
-function animate() {
-  if (!measured) { measureHeights(); measured = true; }
-
+function animate(){
+  if(!measured){ measureHeights(); measured = true; }
   columns.forEach(c => {
-    if (!c.oneSetH) { requestAnimationFrame(animate); return; }
-
+    if(!c.oneSetH) return;
     c.rawPos += c.baseSpeed + c.vel;
     c.vel    *= INERTIA;
-    if (Math.abs(c.vel) < 0.01) c.vel = 0;
-
-    const h = c.oneSetH;
-
-    // Wrap rawPos into [0, h)  — always positive, direction-neutral
-    const wrapped = ((c.rawPos % h) + h) % h;
-
-    // Offset into the MIDDLE copy so visual continuity holds both ways
-    const offset = wrapped + h;
-
-    c.track.style.transform = `translateY(${-offset}px)`;
+    if(Math.abs(c.vel) < 0.01) c.vel = 0;
+    const h      = c.oneSetH;
+    const wrapped= ((c.rawPos % h) + h) % h;
+    c.track.style.transform = `translateY(${-(wrapped + h)}px)`;
   });
-
   requestAnimationFrame(animate);
 }
 animate();
 
-/* =====================================================================
+/* ═══════════════════════════════════════════
    LIGHTBOX
-===================================================================== */
+════════════════════════════════════════════ */
 const lightbox = document.getElementById('lightbox');
 const lbImg    = document.getElementById('lbImg');
+
 document.getElementById('lbClose').addEventListener('click', closeLightbox);
 document.getElementById('lbPrev').addEventListener('click', e => { e.stopPropagation(); navigate(-1); });
 document.getElementById('lbNext').addEventListener('click', e => { e.stopPropagation(); navigate(1); });
-lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+lightbox.addEventListener('click', e => { if(e.target === lightbox) closeLightbox(); });
 document.addEventListener('keydown', e => {
-  if (!lightbox.classList.contains('open')) return;
-  if (e.key === 'Escape')    closeLightbox();
-  if (e.key === 'ArrowLeft') navigate(-1);
-  if (e.key === 'ArrowRight')navigate(1);
+  if(!lightbox.classList.contains('open')) return;
+  if(e.key === 'Escape')     closeLightbox();
+  if(e.key === 'ArrowLeft')  navigate(-1);
+  if(e.key === 'ArrowRight') navigate(1);
 });
 
-let allImages = [];
-let lbIndex   = 0;
+let allImages = [], lbIndex = 0;
 
-function buildImageList() {
+function buildImageList(){
   allImages = [];
   columns.forEach(c => {
-    // Only first set (indices 0 … imgsPerSet-1)
-    const all     = c.track.querySelectorAll('img');
-    const perSet  = all.length / 3;
-    for (let i = 0; i < perSet; i++) allImages.push(all[i].src);
+    const all    = c.track.querySelectorAll('img');
+    const perSet = all.length / 3;
+    for(let i = 0; i < perSet; i++) allImages.push(all[i].src);
   });
 }
 
-function openLightbox(src) {
+function openLightbox(src){
   buildImageList();
   lbIndex = allImages.findIndex(s => s === src);
-  if (lbIndex < 0) lbIndex = 0;
+  if(lbIndex < 0) lbIndex = 0;
   lbImg.src = allImages[lbIndex];
   lightbox.classList.add('open');
 }
 
-function closeLightbox() {
+function closeLightbox(){
   lightbox.classList.remove('open');
   setTimeout(() => { lbImg.src = ''; }, 350);
 }
 
-function navigate(dir) {
+function navigate(dir){
   lbIndex = ((lbIndex + dir) % allImages.length + allImages.length) % allImages.length;
   lbImg.style.opacity = '0';
-  setTimeout(() => {
-    lbImg.src = allImages[lbIndex];
-    lbImg.style.opacity = '1';
-  }, 140);
+  setTimeout(() => { lbImg.src = allImages[lbIndex]; lbImg.style.opacity = '1'; }, 140);
 }
-
 lbImg.style.transition = 'opacity .14s ease';
 
-// Attach click to every card (including clones via delegation)
 document.getElementById('heroRight').addEventListener('click', e => {
   const card = e.target.closest('.card');
-  if (!card) return;
+  if(!card) return;
   openLightbox(card.querySelector('img').src);
 });
 
-// Touch swipe in lightbox
 let touchStartX = 0;
 lightbox.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
 lightbox.addEventListener('touchend',   e => {
   const dx = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(dx) > 50) navigate(dx < 0 ? 1 : -1);
+  if(Math.abs(dx) > 50) navigate(dx < 0 ? 1 : -1);
 });
-
 </script>
 </body>
 </html>
